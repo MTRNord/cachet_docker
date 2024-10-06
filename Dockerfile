@@ -1,4 +1,4 @@
-FROM nginx:1.17.8-alpine
+FROM nginx:1.21-alpine
 
 EXPOSE 8000
 CMD ["/sbin/entrypoint.sh"]
@@ -7,9 +7,9 @@ ARG cachet_ver
 ARG archive_url
 
 ENV cachet_ver ${cachet_ver:-2.4}
-ENV archive_url ${archive_url:-https://github.com/cachethq/Cachet/archive/${cachet_ver}.tar.gz}
+ENV archive_url ${archive_url:-https://github.com/cachethq/cachet/archive/refs/tags/v${cachet_ver}.tar.gz}
 
-ENV COMPOSER_VERSION 1.9.0
+ENV COMPOSER_VERSION 1.10.27
 
 RUN apk add --no-cache --update \
     mysql-client \
@@ -85,7 +85,7 @@ RUN wget https://getcomposer.org/installer -O /tmp/composer-setup.php && \
 WORKDIR /var/www/html/
 USER 1001
 
-RUN wget ${archive_url} && \
+RUN wget -O ${cachet_ver}.tar.gz ${archive_url} && \
     tar xzf ${cachet_ver}.tar.gz --strip-components=1 && \
     chown -R www-data:root /var/www/html && \
     rm -r ${cachet_ver}.tar.gz && \
